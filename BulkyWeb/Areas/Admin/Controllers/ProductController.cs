@@ -97,40 +97,41 @@ namespace BulkyWeb.Areas.Admin.Controllers
             return View(productViewModel);
         }
 
+        #region API CALLS
+
+        [HttpGet]
+        public IActionResult GetAll() 
+        {
+            List<Product> list = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+            return Json(new { data = list });
+        }
+
+        [HttpDelete]
         public IActionResult Delete(int? id)
         {
-            if (id == null || id == 0)
+            var productToDelete = _unitOfWork.Product.Get(item => item.Id == id);
+            if (productToDelete == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Error while deleting" });
             }
 
-            Product? obj = _unitOfWork.Product.Get(item => item.Id == id);
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
 
-            if (obj == null)
+            if (!string.IsNullOrEmpty(productToDelete.ImageUrl))
             {
-                return NotFound();
+                var oldImagePath = Path.Combine(wwwRootPath, productToDelete.ImageUrl.TrimStart('\\'));
+                if (System.IO.File.Exists(oldImagePath))
+                {
+                    System.IO.File.Delete(oldImagePath);
+                }
             }
 
-            return View(obj);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePost(int? id)
-        {
-            Product? obj = _unitOfWork.Product.Get(item => item.Id == id);
-
-            if (obj == null)
-            {
-                return NotFound();
-            }
-
-            _unitOfWork.Product.Remove(obj);
+            _unitOfWork.Product.Remove(productToDelete);
             _unitOfWork.Save();
 
-            TempData["success"] = "Product deleted successfully";
-
-            return RedirectToAction("Index");
+            return Json(new { success = true, message = "Product deleted successfully" });
         }
 
+        #endregion
     }
 }

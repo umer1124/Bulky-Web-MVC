@@ -4,6 +4,7 @@ using Bulky.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bulky.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240118094338_AddUsersSeedDataFunction")]
+    partial class AddUsersSeedDataFunction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -502,28 +505,6 @@ namespace Bulky.DataAccess.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "801999c1-00c3-4a24-9127-84273dd7d267",
-                            RoleId = "137c8e30-8011-4e13-835a-9ed6056b09a6"
-                        },
-                        new
-                        {
-                            UserId = "f17444f0-8643-45ef-9f4e-71f7f90b5a95",
-                            RoleId = "2e6eb075-8360-4354-b40b-29f257b319b1"
-                        },
-                        new
-                        {
-                            UserId = "9d43f78e-da7e-4dc1-bc26-fa3354d7f04a",
-                            RoleId = "3c09f235-e3a2-4530-82e2-257b1f6ead6c"
-                        },
-                        new
-                        {
-                            UserId = "61244749-ec1c-45fc-b3ef-9287c90491db",
-                            RoleId = "803ee787-bbdc-44e7-8a22-9976391b3182"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

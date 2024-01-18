@@ -4,6 +4,7 @@ using Bulky.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bulky.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240118092114_AddUsersSeedData")]
+    partial class AddUsersSeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -502,28 +505,6 @@ namespace Bulky.DataAccess.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "801999c1-00c3-4a24-9127-84273dd7d267",
-                            RoleId = "137c8e30-8011-4e13-835a-9ed6056b09a6"
-                        },
-                        new
-                        {
-                            UserId = "f17444f0-8643-45ef-9f4e-71f7f90b5a95",
-                            RoleId = "2e6eb075-8360-4354-b40b-29f257b319b1"
-                        },
-                        new
-                        {
-                            UserId = "9d43f78e-da7e-4dc1-bc26-fa3354d7f04a",
-                            RoleId = "3c09f235-e3a2-4530-82e2-257b1f6ead6c"
-                        },
-                        new
-                        {
-                            UserId = "61244749-ec1c-45fc-b3ef-9287c90491db",
-                            RoleId = "803ee787-bbdc-44e7-8a22-9976391b3182"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -591,73 +572,6 @@ namespace Bulky.DataAccess.Migrations
                             UserName = "admin@mail.com",
                             City = "Islamabad",
                             Name = "Administrator",
-                            PostalCode = "44000",
-                            State = "Punjab",
-                            StreetAddress = "Gulburg greens"
-                        },
-                        new
-                        {
-                            Id = "f17444f0-8643-45ef-9f4e-71f7f90b5a95",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "9913189b-ff1e-45cb-b841-b4b3af24d48e",
-                            Email = "company@mail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = true,
-                            NormalizedEmail = "COMPANY@MAIL.COM",
-                            NormalizedUserName = "COMPANY@MAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEM7Hz2KjQMFZkx9nAqCZivwRQVatNIWAdMDRBHmOWR1ktJBIQ+AFOQFI+RcsFIMXCQ==",
-                            PhoneNumber = "+921231234567",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "RYDPS4RCBJB6H6YC6O7OIN7JDGXOTMI7",
-                            TwoFactorEnabled = false,
-                            UserName = "company@mail.com",
-                            City = "Islamabad",
-                            CompanyId = 1,
-                            Name = "Company",
-                            PostalCode = "44000",
-                            State = "Punjab",
-                            StreetAddress = "Gulburg greens"
-                        },
-                        new
-                        {
-                            Id = "9d43f78e-da7e-4dc1-bc26-fa3354d7f04a",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "7287cd7b-087c-49c1-afda-257446473577",
-                            Email = "employee@mail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = true,
-                            NormalizedEmail = "EMPLOYEE@MAIL.COM",
-                            NormalizedUserName = "EMPLOYEE@MAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECk8dlZBCbwCFCh2NUtIfvSSnbf2i6OSV2MBcoRm0xQCnFl5HRyYIK7DMWlqicuuPg==",
-                            PhoneNumber = "+921231234567",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "B3VW3NGJPLJIB7VAJPHE4ZQXQRXNG5GT",
-                            TwoFactorEnabled = false,
-                            UserName = "employee@mail.com",
-                            City = "Islamabad",
-                            Name = "Employee",
-                            PostalCode = "44000",
-                            State = "Punjab",
-                            StreetAddress = "Gulburg greens"
-                        },
-                        new
-                        {
-                            Id = "61244749-ec1c-45fc-b3ef-9287c90491db",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "d909fab9-2a74-421f-80a3-423e7a63d46c",
-                            Email = "customer@mail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = true,
-                            NormalizedEmail = "CUSTOMER@MAIL.COM",
-                            NormalizedUserName = "CUSTOMER@MAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMRda8maytGXXAtbxoKSDB28wfRgCaOgXkpIAur+G2O129pb3Ry9CTLs48ixYXu9aA==",
-                            PhoneNumber = "+921231234567",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "F4JXHJNQUW3Y24IDGBQL57S4OMFFESUI",
-                            TwoFactorEnabled = false,
-                            UserName = "customer@mail.com",
-                            City = "Islamabad",
-                            Name = "Customer",
                             PostalCode = "44000",
                             State = "Punjab",
                             StreetAddress = "Gulburg greens"

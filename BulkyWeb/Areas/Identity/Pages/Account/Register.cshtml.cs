@@ -128,7 +128,7 @@ namespace BulkyWeb.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            CreateRoles();
+            /*CreateRoles();*/
 
             Input = new()
             {

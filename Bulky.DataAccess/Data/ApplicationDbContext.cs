@@ -9,7 +9,7 @@ namespace Bulky.DataAccess.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-            
+
         }
 
         public DbSet<Category> Categories { get; set; }
@@ -26,6 +26,159 @@ namespace Bulky.DataAccess.Data
         {
             // when we have IdentityDbContext we have to add base.OnModelCreating(modelBuilder)
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole
+                {
+                    Id = "137c8e30-8011-4e13-835a-9ed6056b09a6",
+                    Name = "Admin",
+                    NormalizedName = "ADMIN",
+                    ConcurrencyStamp = null
+                },
+                new IdentityRole
+                {
+                    Id = "2e6eb075-8360-4354-b40b-29f257b319b1",
+                    Name = "Company",
+                    NormalizedName = "COMPANY",
+                    ConcurrencyStamp = null
+                },
+                new IdentityRole
+                {
+                    Id = "3c09f235-e3a2-4530-82e2-257b1f6ead6c",
+                    Name = "Employee",
+                    NormalizedName = "EMPLOYEE",
+                    ConcurrencyStamp = null
+                },
+                new IdentityRole
+                {
+                    Id = "803ee787-bbdc-44e7-8a22-9976391b3182",
+                    Name = "Customer",
+                    NormalizedName = "CUSTOMER",
+                    ConcurrencyStamp = null
+                }
+            );
+
+            modelBuilder.Entity<ApplicationUser>().HasData(
+                new ApplicationUser
+                {
+                    Id = "801999c1-00c3-4a24-9127-84273dd7d267",
+                    UserName = "admin@mail.com",
+                    NormalizedUserName = "ADMIN@MAIL.COM",
+                    Email = "admin@mail.com",
+                    NormalizedEmail = "ADMIN@MAIL.COM",
+                    EmailConfirmed = false,
+                    PasswordHash = "AQAAAAIAAYagAAAAEFm95zm6s8AEWYAXKqsJz9hpcVL1O/eKknXQsabPr+1XHVDg1QL0q3o3gql/+UflNQ==",
+                    SecurityStamp = "3VXUHXJFIN2DCDKS3XYN2PI533DQQ47H",
+                    ConcurrencyStamp = "e692065d-79c6-41b3-ac96-be818e5e6422",
+                    PhoneNumber = "+921231234567",
+                    PhoneNumberConfirmed = false,
+                    TwoFactorEnabled = false,
+                    LockoutEnd = null,
+                    LockoutEnabled = true,
+                    AccessFailedCount = 0,
+                    City = "Islamabad",
+                    Name = "Administrator",
+                    PostalCode = "44000",
+                    State = "Punjab",
+                    StreetAddress = "Gulburg greens",
+                    CompanyId = null
+                },
+                new ApplicationUser
+                {
+                    Id = "f17444f0-8643-45ef-9f4e-71f7f90b5a95",
+                    UserName = "company@mail.com",
+                    NormalizedUserName = "COMPANY@MAIL.COM",
+                    Email = "company@mail.com",
+                    NormalizedEmail = "COMPANY@MAIL.COM",
+                    EmailConfirmed = false,
+                    PasswordHash = "AQAAAAIAAYagAAAAEM7Hz2KjQMFZkx9nAqCZivwRQVatNIWAdMDRBHmOWR1ktJBIQ+AFOQFI+RcsFIMXCQ==",
+                    SecurityStamp = "RYDPS4RCBJB6H6YC6O7OIN7JDGXOTMI7",
+                    ConcurrencyStamp = "9913189b-ff1e-45cb-b841-b4b3af24d48e",
+                    PhoneNumber = "+921231234567",
+                    PhoneNumberConfirmed = false,
+                    TwoFactorEnabled = false,
+                    LockoutEnd = null,
+                    LockoutEnabled = true,
+                    AccessFailedCount = 0,
+                    City = "Islamabad",
+                    Name = "Company",
+                    PostalCode = "44000",
+                    State = "Punjab",
+                    StreetAddress = "Gulburg greens",
+                    CompanyId = 1
+                },
+                new ApplicationUser
+                {
+                    Id = "9d43f78e-da7e-4dc1-bc26-fa3354d7f04a",
+                    UserName = "employee@mail.com",
+                    NormalizedUserName = "EMPLOYEE@MAIL.COM",
+                    Email = "employee@mail.com",
+                    NormalizedEmail = "EMPLOYEE@MAIL.COM",
+                    EmailConfirmed = false,
+                    PasswordHash = "AQAAAAIAAYagAAAAECk8dlZBCbwCFCh2NUtIfvSSnbf2i6OSV2MBcoRm0xQCnFl5HRyYIK7DMWlqicuuPg==",
+                    SecurityStamp = "B3VW3NGJPLJIB7VAJPHE4ZQXQRXNG5GT",
+                    ConcurrencyStamp = "7287cd7b-087c-49c1-afda-257446473577",
+                    PhoneNumber = "+921231234567",
+                    PhoneNumberConfirmed = false,
+                    TwoFactorEnabled = false,
+                    LockoutEnd = null,
+                    LockoutEnabled = true,
+                    AccessFailedCount = 0,
+                    City = "Islamabad",
+                    Name = "Employee",
+                    PostalCode = "44000",
+                    State = "Punjab",
+                    StreetAddress = "Gulburg greens",
+                    CompanyId = null
+                },
+                new ApplicationUser
+                {
+                    Id = "61244749-ec1c-45fc-b3ef-9287c90491db",
+                    UserName = "customer@mail.com",
+                    NormalizedUserName = "CUSTOMER@MAIL.COM",
+                    Email = "customer@mail.com",
+                    NormalizedEmail = "CUSTOMER@MAIL.COM",
+                    EmailConfirmed = false,
+                    PasswordHash = "AQAAAAIAAYagAAAAEMRda8maytGXXAtbxoKSDB28wfRgCaOgXkpIAur+G2O129pb3Ry9CTLs48ixYXu9aA==",
+                    SecurityStamp = "F4JXHJNQUW3Y24IDGBQL57S4OMFFESUI",
+                    ConcurrencyStamp = "d909fab9-2a74-421f-80a3-423e7a63d46c",
+                    PhoneNumber = "+921231234567",
+                    PhoneNumberConfirmed = false,
+                    TwoFactorEnabled = false,
+                    LockoutEnd = null,
+                    LockoutEnabled = true,
+                    AccessFailedCount = 0,
+                    City = "Islamabad",
+                    Name = "Customer",
+                    PostalCode = "44000",
+                    State = "Punjab",
+                    StreetAddress = "Gulburg greens",
+                    CompanyId = null
+                }
+            );
+
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+                new IdentityUserRole<string> 
+                {
+                    UserId = "801999c1-00c3-4a24-9127-84273dd7d267",
+                    RoleId = "137c8e30-8011-4e13-835a-9ed6056b09a6"
+                },
+                new IdentityUserRole<string>
+                {
+                    UserId = "f17444f0-8643-45ef-9f4e-71f7f90b5a95",
+                    RoleId = "2e6eb075-8360-4354-b40b-29f257b319b1"
+                },
+                new IdentityUserRole<string>
+                {
+                    UserId = "9d43f78e-da7e-4dc1-bc26-fa3354d7f04a",
+                    RoleId = "3c09f235-e3a2-4530-82e2-257b1f6ead6c"
+                },
+                new IdentityUserRole<string> 
+                {
+                    UserId = "61244749-ec1c-45fc-b3ef-9287c90491db",
+                    RoleId = "803ee787-bbdc-44e7-8a22-9976391b3182"
+                }
+            );
 
             modelBuilder.Entity<Category>().HasData(
                 new Category { 

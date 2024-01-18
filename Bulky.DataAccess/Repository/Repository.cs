@@ -27,15 +27,14 @@ namespace Bulky.DataAccess.Repository
             dbSet.Add(entity);
         }
 
-        public T Get(Expression<Func<T, bool>> predicate, string? includeProperties = null)
+        public T Get(Expression<Func<T, bool>> predicate, string? includeProperties = null, bool tracked = false)
         {
-            IQueryable<T> query = dbSet;
+            IQueryable<T> query = tracked ? dbSet : dbSet.AsNoTracking();
             query = query.Where(predicate);
 
             if (!string.IsNullOrEmpty(includeProperties))
             {
-                foreach (var includeProp in includeProperties
-                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     query = query.Include(includeProp);
                 }
@@ -44,9 +43,13 @@ namespace Bulky.DataAccess.Repository
             return query.FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll(string? includeProperties = null)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? predicate = null, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
+            if (predicate != null)
+            { 
+                query = query.Where(predicate);
+            }
 
             if (!string.IsNullOrEmpty(includeProperties))
             {

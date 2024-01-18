@@ -1,6 +1,7 @@
 ﻿using Bulky.DataAccess.Repository.IRepository;
 using Bulky.Models;
 using Bulky.Models.ViewModels;
+using Bulky.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -15,7 +16,9 @@ namespace BulkyWeb.Areas.Customer.Controllers
 
         private readonly IUnitOfWork _unitOfWork;
 
+        [BindProperty]
         public ShoppingCartViewModel shoppingCartViewModel { get; set; }
+
         public CartController(ILogger<CartController> logger, IUnitOfWork unitOfWork)
         {
             _logger = logger;
@@ -29,13 +32,14 @@ namespace BulkyWeb.Areas.Customer.Controllers
 
             shoppingCartViewModel = new()
             {
-                ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(item => item.ApplicationUserId == userId, includeProperties: "Product").ToList()
+                ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(item => item.ApplicationUserId == userId, includeProperties: "Product").ToList(),
+                OrderHeader = new()
             };
 
             foreach (var cart in shoppingCartViewModel.ShoppingCartList)
             { 
                 cart.Price = GetPriceBasedOnQuantity(cart);
-                shoppingCartViewModel.OrderTotal += (cart.Price * cart.Count);
+                shoppingCartViewModel.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
 
             return View(shoppingCartViewModel);
@@ -81,11 +85,101 @@ namespace BulkyWeb.Areas.Customer.Controllers
         }
 
         public IActionResult Summary()
-        { 
-            return View();
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            string userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            shoppingCartViewModel = new()
+            {
+                ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(item => item.ApplicationUserId == userId, includeProperties: "Product").ToList(),
+                OrderHeader = new()
+            };
+
+            shoppingCartViewModel.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.Get(item => item.Id == userId);
+
+            shoppingCartViewModel.OrderHeader.ApplicationUserId = shoppingCartViewModel.OrderHeader.ApplicationUser.Id;
+            shoppingCartViewModel.OrderHeader.Name = shoppingCartViewModel.OrderHeader.ApplicationUser.Name;
+            shoppingCartViewModel.OrderHeader.StreetAddress = shoppingCartViewModel.OrderHeader.ApplicationUser.StreetAddress;
+            shoppingCartViewModel.OrderHeader.City = shoppingCartViewModel.OrderHeader.ApplicationUser.City;
+            shoppingCartViewModel.OrderHeader.State = shoppingCartViewModel.OrderHeader.ApplicationUser.State;
+            shoppingCartViewModel.OrderHeader.PostalCode = shoppingCartViewModel.OrderHeader.ApplicationUser.PostalCode;
+            shoppingCartViewModel.OrderHeader.PhoneNumber = shoppingCartViewModel.OrderHeader.ApplicationUser.PhoneNumber;
+
+            foreach (var cart in shoppingCartViewModel.ShoppingCartList)
+            {
+                cart.Price = GetPriceBasedOnQuantity(cart);
+                shoppingCartViewModel.OrderHeader.OrderTotal += (cart.Price * cart.Count);
+            }
+
+            return View(shoppingCartViewModel);
         }
 
-        private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
+        [HttpPost]
+        [ActionName("Summary")]
+        public IActionResult SummaryPost()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            string userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            shoppingCartViewModel.ShoppingCartList = _unitOfWork.ShoppingCart.GetAll(item => item.ApplicationUserId == userId, includeProperties: "Product").ToList();
+
+
+            shoppingCartViewModel.OrderHeader.ApplicationUserId = userId;
+            shoppingCartViewModel.OrderHeader.OrderDate = DateTime.Now;
+
+            ApplicationUser applicationUser = _unitOfWork.ApplicationUser.Get(item => item.Id == userId);
+
+            foreach (var cart in shoppingCartViewModel.ShoppingCartList)
+            {
+                cart.Price = GetPriceBasedOnQuantity(cart);
+                shoppingCartViewModel.OrderHeader.OrderTotal += (cart.Price * cart.Count);
+            }
+
+            if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+            {
+                // It is a regular customer account and we need to capture payment
+                shoppingCartViewModel.OrderHeader.OrderStatus = SD.ORDER_STATUS_PENDING;
+                shoppingCartViewModel.OrderHeader.PaymentStatus = SD.PAYMENT_STATUS_PENDING;
+            }
+            else
+            {
+                // It is a company user
+                shoppingCartViewModel.OrderHeader.OrderStatus = SD.ORDER_STATUS_APPROVED;
+                shoppingCartViewModel.OrderHeader.PaymentStatus = SD.PAYMENT_STATUS_APPROVED_FOR_DELAYED_PAYMENT;
+            }
+
+            _unitOfWork.OrderHeader.Add(shoppingCartViewModel.OrderHeader);
+            _unitOfWork.Save();
+
+            foreach (var cart in shoppingCartViewModel.ShoppingCartList)
+            {
+                OrderDetail orderDetail = new()
+                {
+                    ProductId = cart.ProductId,
+                    OrderHeaderId = shoppingCartViewModel.OrderHeader.Id,
+                    Price = cart.Price,
+                    Count = cart.Count,
+                };
+
+                _unitOfWork.OrderDetail.Add(orderDetail);
+                _unitOfWork.Save();
+            }
+
+            if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+            {
+                // It is a regular customer account and we need to capture payment
+                // Add Strip payment logic here
+            }
+
+            return RedirectToAction(nameof(OrderConfirmation), new { id = shoppingCartViewModel.OrderHeader.Id });
+		}
+
+        public IActionResult OrderConfirmation(int id)
+        { 
+            return View(id);
+        }
+
+		private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
         {
             if (shoppingCart.Count <= 50)
             {

@@ -16,6 +16,8 @@ namespace Bulky.DataAccess.Data
 
         public DbSet<Product> Products { get; set; }
 
+        public DbSet<Company> Companies { get; set; }
+
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -114,6 +116,10 @@ namespace Bulky.DataAccess.Data
                     CategoryId = 3,
                     ImageUrl = ""
                 }
+            );
+
+            modelBuilder.Entity<Company>().HasData(
+                new Company { Id = 1, Name = "TData", StreetAddress = "Gulburg Greens", City = "Islamabad", PhoneNumber = "+921231234567", PostalCode = "44000", State = "Punjab" }
             );
         }
     }

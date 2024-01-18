@@ -20,6 +20,8 @@ namespace Bulky.DataAccess.Data
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // when we have IdentityDbContext we have to add base.OnModelCreating(modelBuilder)
@@ -121,12 +123,32 @@ namespace Bulky.DataAccess.Data
             modelBuilder.Entity<Company>().HasData(
                 new Company { 
                     Id = 1, 
-                    Name = "TData", 
+                    Name = "TeraData", 
                     StreetAddress = "Gulburg Greens",
                     City = "Islamabad", 
                     PhoneNumber = "+921231234567",
                     PostalCode = "44000", 
                     State = "Punjab" 
+                },
+                new Company
+                {
+                    Id = 2,
+                    Name = "Ciklum",
+                    StreetAddress = "Gulburg Greens",
+                    City = "Islamabad",
+                    PhoneNumber = "+921231234567",
+                    PostalCode = "44000",
+                    State = "Punjab"
+                },
+                new Company
+                {
+                    Id = 3,
+                    Name = "10Pearls",
+                    StreetAddress = "Gulburg Greens",
+                    City = "Islamabad",
+                    PhoneNumber = "+921231234567",
+                    PostalCode = "44000",
+                    State = "Punjab"
                 }
             );
         }

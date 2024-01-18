@@ -119,7 +119,15 @@ namespace Bulky.DataAccess.Data
             );
 
             modelBuilder.Entity<Company>().HasData(
-                new Company { Id = 1, Name = "TData", StreetAddress = "Gulburg Greens", City = "Islamabad", PhoneNumber = "+921231234567", PostalCode = "44000", State = "Punjab" }
+                new Company { 
+                    Id = 1, 
+                    Name = "TData", 
+                    StreetAddress = "Gulburg Greens",
+                    City = "Islamabad", 
+                    PhoneNumber = "+921231234567",
+                    PostalCode = "44000", 
+                    State = "Punjab" 
+                }
             );
         }
     }

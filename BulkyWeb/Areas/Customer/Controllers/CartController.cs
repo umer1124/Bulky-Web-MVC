@@ -246,6 +246,9 @@ namespace BulkyWeb.Areas.Customer.Controllers
 
                 _unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
                 _unitOfWork.Save();
+
+                int shoppingCartCount = _unitOfWork.ShoppingCart.Count(item => item.ApplicationUserId == orderHeader.ApplicationUserId);
+                HttpContext.Session.SetInt32(SD.SESSION_SHOPPING_CART, shoppingCartCount);
             }
 
             return View(id);

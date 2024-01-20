@@ -19,6 +19,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Inside the Stripe settings match what is there in the Stripe section in app settings it'll automatically inject these values inside the properties right here.
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+builder.Services.Configure<FacebookAuthSettings>(builder.Configuration.GetSection("FacebookAuth"));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
@@ -26,6 +27,11 @@ builder.Services.ConfigureApplicationCookie(options => {
     options.LoginPath = $"/Identity/Account/Login";
     options.LogoutPath = $"/Identity/Account/Logout";
     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+});
+
+builder.Services.AddAuthentication().AddFacebook(option => {
+    option.AppId = builder.Configuration.GetSection("FacebookAuth:AppId").Get<string>();
+    option.AppSecret = builder.Configuration.GetSection("FacebookAuth:AppSecret").Get<string>();
 });
 
 // Adding session to the services

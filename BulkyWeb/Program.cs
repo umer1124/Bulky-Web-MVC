@@ -28,6 +28,14 @@ builder.Services.ConfigureApplicationCookie(options => {
     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
 });
 
+// Adding session to the services
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(option => {
+    option.IdleTimeout = TimeSpan.FromMinutes(100);
+    option.Cookie.HttpOnly = true;
+    option.Cookie.IsEssential = true;
+});
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
@@ -50,6 +58,9 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Add session in our request pipeline
+app.UseSession();
 
 app.MapRazorPages();
 app.MapControllerRoute(

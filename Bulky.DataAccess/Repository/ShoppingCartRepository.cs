@@ -23,5 +23,10 @@ namespace Bulky.DataAccess.Repository
         {
             _db.ShoppingCarts.Update(shoppingCart);
         }
+
+        public int GetCartCount(string applicationUserId)
+        {
+            return _db.ShoppingCarts.Where(item => item.ApplicationUserId == applicationUserId).Sum(col => col.Count);
+        }
     }
 }

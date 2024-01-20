@@ -72,5 +72,13 @@ namespace Bulky.DataAccess.Repository
         {
             dbSet.RemoveRange(entities);
         }
+
+        public int Count(Expression<Func<T, bool>> predicate)
+        {
+            IQueryable<T> query = dbSet;
+            query = query.Where(predicate);
+
+            return query.Count();
+        }
     }
 }

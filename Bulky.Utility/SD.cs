@@ -35,6 +35,12 @@ namespace Bulky.Utility
 		public const string PAYMENT_STATUS_REJECTED = "Rejected";
 		public const string PAYMENT_STATUS_APPROVED_FOR_DELAYED_PAYMENT = "ApprovedForDelayedPayment";
 
-		#endregion
-	}
+        #endregion
+
+        #region Session-keys
+
+        public const string SESSION_SHOPPING_CART = "SessionShoppingCart";
+
+        #endregion
+    }
 }

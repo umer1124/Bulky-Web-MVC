@@ -52,7 +52,9 @@ namespace BulkyWeb.Areas.Admin.Controllers
             orderViewModel.orderDetail = _unitOfWork.OrderDetail.GetAll(item => item.OrderHeaderId == orderViewModel.orderHeader.Id, includeProperties: "Product");
 
             // Add Strip payment logic here
-            string domain = "https://localhost:7160";
+            //string domain = "https://localhost:7160";
+            string domain = "https://bulkymvc.azurewebsites.net";
+
             var options = new SessionCreateOptions
             {
                 SuccessUrl = $"{domain}/admin/order/PaymentConfirmation?orderHeaderId={orderViewModel.orderHeader.Id}",

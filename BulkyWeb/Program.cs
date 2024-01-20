@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Bulky.Utility;
 using Stripe;
+using Bulky.DataAccess.DbInitializer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,7 @@ builder.Services.AddSession(option => {
     option.Cookie.IsEssential = true;
 });
 
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
@@ -68,9 +70,21 @@ app.UseAuthorization();
 // Add session in our request pipeline
 app.UseSession();
 
+seedDatabase();
+
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{area=customer}/{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+
+void seedDatabase()
+{
+    using (var scope = app.Services.CreateScope())
+    { 
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        dbInitializer.Initialize();
+    }
+}

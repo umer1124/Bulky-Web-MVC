@@ -6,6 +6,10 @@
 f17444f0-8643-45ef-9f4e-71f7f90b5a95	company@mail.com	COMPANY@MAIL.COM	company@mail.com	COMPANY@MAIL.COM	False	AQAAAAIAAYagAAAAEM7Hz2KjQMFZkx9nAqCZivwRQVatNIWAdMDRBHmOWR1ktJBIQ+AFOQFI+RcsFIMXCQ==	RYDPS4RCBJB6H6YC6O7OIN7JDGXOTMI7	9913189b-ff1e-45cb-b841-b4b3af24d48e	+921231234567	False	False	NULL	True	0	Islamabad	ApplicationUser	Company	44000	Islamabad	Gulburg greens	1
 
 
+// Database 
+username: sqladmin
+password: admin123*
+
 
 // Roles
 

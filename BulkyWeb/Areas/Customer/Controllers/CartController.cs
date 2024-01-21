@@ -179,8 +179,9 @@ namespace BulkyWeb.Areas.Customer.Controllers
             {
                 // It is a regular customer account and we need to capture payment
                 // Add Strip payment logic here
-                //string domain = "https://localhost:7160";
-                string domain = "https://bulkymvc.azurewebsites.net";
+
+                string domain = Request.Scheme + "://" + Request.Host.Value;
+
                 var options = new SessionCreateOptions
                 {
                     SuccessUrl = $"{domain}/customer/cart/OrderConfirmation?id={shoppingCartViewModel.OrderHeader.Id}",

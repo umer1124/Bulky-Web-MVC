@@ -19,12 +19,15 @@ namespace BulkyWeb.Areas.Admin.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
 
+        private readonly UserManager<IdentityUser> _userManager;
+
         private readonly ApplicationDbContext _db;
 
-        public UserController(IUnitOfWork unitOfWork, ApplicationDbContext db)
+        public UserController(IUnitOfWork unitOfWork, ApplicationDbContext db, UserManager<IdentityUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _db = db;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -32,39 +35,35 @@ namespace BulkyWeb.Areas.Admin.Controllers
             return View();
         }
 
-        public IActionResult RoleManagement(string? userId)
+        public IActionResult RoleManagement(string userId)
         {
             if (string.IsNullOrEmpty(userId))
             {
                 return NotFound();
             }
 
-            ApplicationUser? applicationUser = _db.Users.FirstOrDefault(item => item.Id == userId) as ApplicationUser;
+            ApplicationUser? applicationUser = _db.ApplicationUsers.Include(item => item.Company).FirstOrDefault(item => item.Id == userId);
             if (applicationUser == null) 
             {
                 return NotFound();
             }
 
-            var roles = _db.Roles.ToList();
             var userRole = _db.UserRoles.FirstOrDefault(item => item.UserId == userId);
             if (userRole == null)
             {
                 return NotFound();
             }
 
-            var userCompanyId = applicationUser.CompanyId;
+            applicationUser.Role = _db.Roles.FirstOrDefault(role => role.Id == userRole.RoleId).Name;
 
             RoleManagementViewModel userRoleViewModel = new()
             {
-                UserId = userId,
-                Name = applicationUser.Name,
-                RoleId = userRole.RoleId,
+                ApplicationUser = applicationUser,
                 RoleList = _db.Roles.ToList().Select(i => new SelectListItem
                 {
                     Text = i.Name,
-                    Value = i.Id.ToString()
+                    Value = i.Name
                 }),
-                CompanyId = userCompanyId,
                 CompanyList = _unitOfWork.Company.GetAll().Select(i => new SelectListItem
                 {
                     Text = i.Name,
@@ -76,68 +75,49 @@ namespace BulkyWeb.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult RoleManagement(RoleManagementViewModel userRoleViewModel)
+        public IActionResult RoleManagement(RoleManagementViewModel roleManagementViewModel)
         {
-            if (ModelState.IsValid)
+
+            // Bug when change only company face issue
+            var userRole = _db.UserRoles.FirstOrDefault(item => item.UserId == roleManagementViewModel.ApplicationUser.Id);
+            var oldRole = _db.Roles.FirstOrDefault(item => item.Id == userRole.RoleId);
+
+            if (!(roleManagementViewModel.ApplicationUser.Role == oldRole.Name))
             {
-                var userRole = _db.UserRoles.FirstOrDefault(item => item.UserId == userRoleViewModel.UserId);
-                if (userRole.RoleId != userRoleViewModel.RoleId) 
+                ApplicationUser applicationUser = _db.ApplicationUsers.FirstOrDefault(item => item.Id == roleManagementViewModel.ApplicationUser.Id);
+                if (roleManagementViewModel.ApplicationUser.Role == SD.ROLE_COMPANY)
                 {
-                    // Update UserRole in db
-                    _db.UserRoles.Remove(userRole);
-                    _db.SaveChanges();
-
-                    userRole.RoleId = userRoleViewModel.RoleId;
-                    _db.UserRoles.Add(new()
-                    { 
-                        RoleId = userRoleViewModel.RoleId,
-                        UserId = userRoleViewModel.UserId,
-                    });
-                    _db.SaveChanges();
+                    applicationUser.CompanyId = roleManagementViewModel.ApplicationUser.CompanyId;
                 }
 
-                ApplicationUser applicationUser = _db.Users.FirstOrDefault(item => item.Id == userRoleViewModel.UserId) as ApplicationUser;
-
-                if (applicationUser.CompanyId == userRoleViewModel.CompanyId)
-                {
-                    TempData["success"] = "User Role updated successfully";
-
-                    return RedirectToAction("Index");
-                }
-
-                var isCompanyRoleSelected = _db.Roles.FirstOrDefault(item => item.Id == userRoleViewModel.RoleId && item.Name.ToLower() == "company") == null ? false : true;
-
-                if (isCompanyRoleSelected)
-                {
-                    applicationUser.CompanyId = userRoleViewModel.CompanyId;
-                }
-                else
+                if (oldRole.Name == SD.ROLE_COMPANY)
                 {
                     applicationUser.CompanyId = null;
                 }
 
-                _db.Users.Update(applicationUser);
+                _db.SaveChanges();
 
-                _db.SaveChanges();                
-
-                TempData["success"] = "User Role updated successfully";
-
-                return RedirectToAction("Index");
+                _userManager.RemoveFromRoleAsync(applicationUser, oldRole.Name).GetAwaiter().GetResult();
+                _userManager.AddToRoleAsync(applicationUser, roleManagementViewModel.ApplicationUser.Role).GetAwaiter().GetResult();
             }
 
-            userRoleViewModel.RoleList = _db.Roles.ToList().Select(i => new SelectListItem
-            {
-                Text = i.Name,
-                Value = i.Id.ToString()
-            });
-            
-            userRoleViewModel.CompanyList = _unitOfWork.Company.GetAll().Select(i => new SelectListItem
+            TempData["success"] = "User Role updated successfully";
+
+            return RedirectToAction("Index");
+
+           /* roleManagementViewModel.RoleList = _db.Roles.ToList().Select(i => new SelectListItem
             {
                 Text = i.Name,
                 Value = i.Id.ToString()
             });
 
-            return View(userRoleViewModel);
+            roleManagementViewModel.CompanyList = _unitOfWork.Company.GetAll().Select(i => new SelectListItem
+            {
+                Text = i.Name,
+                Value = i.Id.ToString()
+            });
+
+            return View(roleManagementViewModel);*/
         }
 
         #region API CALLS
